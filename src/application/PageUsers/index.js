@@ -1,33 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { PageUsersContainer } from "./style";
-import User from "./user";
+import Users from "./users";
 import FormEdit from "./form-edit";
 import FormCreate from "./form-create";
 import Button from "@material-ui/core/Button";
-import { connect } from "react-redux";
-import { getUsers } from "../store/actions";
+import { useTranslation } from "react-i18next";
 
-const PageUsers = (props) => {
-    const { getUsers } = props;
-
-    const { userIds } = props;
-
+const PageUsers = () => {
     const [isCreate, setIsCreate] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
     const [idEdit, setIdEdit] = useState(null);
 
-    const handleShowFormEdit = (id) => {
+    const { t, i18n } = useTranslation();
+
+    const handleShowFormEdit = useCallback((id) => {
         setIsEdit(true);
         setIdEdit(id);
-    };
-
-    useEffect(() => {
-        getUsers();
-    }, [getUsers]);
+    }, []);
 
     return (
         <PageUsersContainer>
-            <h1>List User</h1>
+            <button onClick={() => i18n.changeLanguage("vi")}>VI</button>
+            <button onClick={() => i18n.changeLanguage("en")}>EN</button>
+            <h1>{t("title")}</h1>
             <div className="button-create">
                 <Button
                     onClick={() => setIsCreate(true)}
@@ -52,18 +47,7 @@ const PageUsers = (props) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {userIds &&
-                            userIds.map((userId) => {
-                                return (
-                                    <User
-                                        key={userId}
-                                        handleShowFormEdit={() =>
-                                            handleShowFormEdit(userId)
-                                        }
-                                        id={userId}
-                                    />
-                                );
-                            })}
+                        <Users handleShowFormEdit={handleShowFormEdit} />
                     </tbody>
                     <tfoot>
                         <tr>
@@ -79,15 +63,4 @@ const PageUsers = (props) => {
     );
 };
 
-const mapStateToProps = (state) => ({
-    userIds: state.userIds,
-});
-
-const mapDispatchToProps = (dispatch) => ({
-    getUsers: () => getUsers(dispatch),
-});
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(React.memo(PageUsers));
+export default PageUsers;

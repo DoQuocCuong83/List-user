@@ -1,21 +1,22 @@
-import React, { useRef, useState } from "react";
+import React, { useState, useRef } from "react";
 import TextField from "@material-ui/core/TextField";
-import { FormEditContainer } from "./style";
+import { FormCreateContainer } from "./style";
 import Button from "@material-ui/core/Button";
-import { editUser } from "../../store/actions";
-import { connect } from "react-redux";
+import ButtonGroup from "@material-ui/core/ButtonGroup";
+import { createUser } from "../store/actions";
+import { useDispatch } from "react-redux";
 import Fade from "@material-ui/core/Fade";
 
-const FormEdit = (props) => {
-    const { editUser } = props;
-
-    const { id } = props;
+const FormCreate = (props) => {
+    const { handleHideFormCreate } = props;
 
     const [nameInput, setNameInput] = useState("");
     const [maleInput, setMaleInput] = useState("");
 
     const nameInputRef = useRef();
     const maleInputRef = useRef();
+
+    const dispatch = useDispatch();
 
     const handleChangeNameInput = (event) => {
         setNameInput(event.target.value);
@@ -31,14 +32,13 @@ const FormEdit = (props) => {
         } else if (maleInput !== "true" && maleInput !== "false") {
             maleInputRef.current.focus();
         } else {
-            editUser(id, { id: id, name: nameInput, male: maleInput });
+            dispatch(createUser({ name: nameInput, male: maleInput }));
         }
     };
 
     return (
-        <Fade in={true}>
-            <FormEditContainer>
-                <div className="header">Edit id {id}</div>
+        <FormCreateContainer>
+            <Fade in={true}>
                 <form noValidate autoComplete="off">
                     <TextField
                         id="outlined-basic"
@@ -54,21 +54,18 @@ const FormEdit = (props) => {
                         inputRef={maleInputRef}
                         onChange={handleChangeMaleInput}
                     />
-                    <Button
-                        onClick={handleSubmit}
+                    <ButtonGroup
                         variant="contained"
                         color="secondary"
+                        aria-label="contained secondary button group"
                     >
-                        Edit
-                    </Button>
+                        <Button onClick={handleSubmit}>Add</Button>
+                        <Button onClick={handleHideFormCreate}>Close</Button>
+                    </ButtonGroup>
                 </form>
-            </FormEditContainer>
-        </Fade>
+            </Fade>
+        </FormCreateContainer>
     );
 };
 
-const mapDispatchToProps = (dispatch) => ({
-    editUser: (userId, newUser) => editUser(userId, newUser, dispatch),
-});
-
-export default connect(null, mapDispatchToProps)(React.memo(FormEdit));
+export default FormCreate;
