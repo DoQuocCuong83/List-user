@@ -1,7 +1,4 @@
-import { combineReducers } from "redux";
-import usersReducer from "../application/PageUsers/store/reducer";
+import { combineReducers } from 'redux';
+import reducerRegistry from './reducer-registry';
 
-
-export default combineReducers({
-    users: usersReducer,
-});
+export default combineReducers(reducerRegistry.getReducers());
