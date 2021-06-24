@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Button from '@material-ui/core/Button';
 import { useSelector, useDispatch } from 'react-redux';
-import { deleteUser, getUsers } from '../store/actions';
+import { GET_USERS_LOADING, DELETE_USER_LOADING } from '../store/constants';
 import Fade from '@material-ui/core/Fade';
 
 const User = (props) => {
@@ -27,7 +27,12 @@ const User = (props) => {
               color='secondary'
               aria-label='contained secondary button group'>
               <Button onClick={handleShowFormEdit}>Edit</Button>
-              <Button onClick={() => dispatch(deleteUser(id))}>Delete</Button>
+              <Button
+                onClick={() =>
+                  dispatch({ type: DELETE_USER_LOADING, userId: id })
+                }>
+                Delete
+              </Button>
             </ButtonGroup>
           </td>
         </tr>
@@ -44,7 +49,7 @@ const Users = (props) => {
   const { handleShowFormEdit } = props;
 
   useEffect(() => {
-    dispatch(getUsers());
+    dispatch({ type: GET_USERS_LOADING });
   }, [dispatch]);
   return (
     <>
